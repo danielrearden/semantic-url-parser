@@ -1449,7 +1449,7 @@ export const siteContentRules: {
     domain: 'instagram.com',
     extractContentInfo: createIdFromFirstPathnameRegexMatchContentInfoExtractor(
       'reelId',
-      /^\/reel\/(\w+)/u,
+      /^(?:\/[\w-]+\/reel\/|\/reel\/)(\w+)/u,
       'https://instagram.com/reel/{{reelId}}',
     ),
     formatUrl: ({ reelId }) => {
@@ -1457,6 +1457,10 @@ export const siteContentRules: {
     },
     site: 'INSTAGRAM',
     tests: {
+      'https://www.instagram.com/instagram/reel/DQuQGP_AO70': {
+        reelId: 'DQuQGP_AO70',
+        url: 'https://instagram.com/reel/DQuQGP_AO70',
+      },
       'https://www.instagram.com/reel/Cbz20_0j2m4/': {
         reelId: 'Cbz20_0j2m4',
         url: 'https://instagram.com/reel/Cbz20_0j2m4',
