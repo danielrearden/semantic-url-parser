@@ -516,6 +516,13 @@ export type SiteContentInfo = {
     url: string;
     urlVariant: 'FOLDER';
   };
+  'YOUTUBE.LIVE_VIDEO.DEFAULT': {
+    contentType: 'LIVE_VIDEO';
+    site: 'YOUTUBE';
+    url: string;
+    urlVariant: 'DEFAULT';
+    videoId: string;
+  };
   'YOUTUBE.PLAYLIST.DEFAULT': {
     contentType: 'PLAYLIST';
     playlistId: string;
@@ -1449,7 +1456,7 @@ export const siteContentRules: {
     domain: 'instagram.com',
     extractContentInfo: createIdFromFirstPathnameRegexMatchContentInfoExtractor(
       'reelId',
-      /^\/reel\/(\w+)/u,
+      /^(?:\/[\w-]+\/reel\/|\/reel\/)(\w+)/u,
       'https://instagram.com/reel/{{reelId}}',
     ),
     formatUrl: ({ reelId }) => {
@@ -1457,6 +1464,10 @@ export const siteContentRules: {
     },
     site: 'INSTAGRAM',
     tests: {
+      'https://www.instagram.com/instagram/reel/DQuQGP_AO70': {
+        reelId: 'DQuQGP_AO70',
+        url: 'https://instagram.com/reel/DQuQGP_AO70',
+      },
       'https://www.instagram.com/reel/Cbz20_0j2m4/': {
         reelId: 'Cbz20_0j2m4',
         url: 'https://instagram.com/reel/Cbz20_0j2m4',
@@ -2319,6 +2330,31 @@ export const siteContentRules: {
       },
     },
     urlVariant: 'FOLDER',
+    weight: 100,
+  },
+  'YOUTUBE.LIVE_VIDEO.DEFAULT': {
+    contentType: 'LIVE_VIDEO',
+    domain: /(^|\.)youtube\.com$/u,
+    extractContentInfo: createIdFromFirstPathnameRegexMatchContentInfoExtractor(
+      'videoId',
+      /^\/live\/([\w-]+)/u,
+      'https://youtube.com/live/{{videoId}}',
+    ),
+    formatUrl: ({ videoId }) => {
+      return `https://youtube.com/live/${videoId}`;
+    },
+    site: 'YOUTUBE',
+    tests: {
+      'https://www.youtube.com/live/dQw4w9WgXcQ': {
+        url: 'https://youtube.com/live/dQw4w9WgXcQ',
+        videoId: 'dQw4w9WgXcQ',
+      },
+      'https://youtube.com/live/dQw4w9WgXcQ': {
+        url: 'https://youtube.com/live/dQw4w9WgXcQ',
+        videoId: 'dQw4w9WgXcQ',
+      },
+    },
+    urlVariant: 'DEFAULT',
     weight: 100,
   },
   'YOUTUBE.PLAYLIST.DEFAULT': {
