@@ -516,6 +516,13 @@ export type SiteContentInfo = {
     url: string;
     urlVariant: 'FOLDER';
   };
+  'YOUTUBE.LIVE_VIDEO.DEFAULT': {
+    contentType: 'LIVE_VIDEO';
+    site: 'YOUTUBE';
+    url: string;
+    urlVariant: 'DEFAULT';
+    videoId: string;
+  };
   'YOUTUBE.PLAYLIST.DEFAULT': {
     contentType: 'PLAYLIST';
     playlistId: string;
@@ -2323,6 +2330,31 @@ export const siteContentRules: {
       },
     },
     urlVariant: 'FOLDER',
+    weight: 100,
+  },
+  'YOUTUBE.LIVE_VIDEO.DEFAULT': {
+    contentType: 'LIVE_VIDEO',
+    domain: /(^|\.)youtube\.com$/u,
+    extractContentInfo: createIdFromFirstPathnameRegexMatchContentInfoExtractor(
+      'videoId',
+      /^\/live\/([\w-]+)/u,
+      'https://youtube.com/live/{{videoId}}',
+    ),
+    formatUrl: ({ videoId }) => {
+      return `https://youtube.com/live/${videoId}`;
+    },
+    site: 'YOUTUBE',
+    tests: {
+      'https://www.youtube.com/live/dQw4w9WgXcQ': {
+        url: 'https://youtube.com/live/dQw4w9WgXcQ',
+        videoId: 'dQw4w9WgXcQ',
+      },
+      'https://youtube.com/live/dQw4w9WgXcQ': {
+        url: 'https://youtube.com/live/dQw4w9WgXcQ',
+        videoId: 'dQw4w9WgXcQ',
+      },
+    },
+    urlVariant: 'DEFAULT',
     weight: 100,
   },
   'YOUTUBE.PLAYLIST.DEFAULT': {
