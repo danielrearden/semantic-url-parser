@@ -258,6 +258,20 @@ export type SiteContentInfo = {
     url: string;
     urlVariant: 'DEFAULT';
   };
+  'LINKEDIN.FEED_POST.EMBED': {
+    contentType: 'FEED_POST';
+    postId: string;
+    site: 'LINKEDIN';
+    url: string;
+    urlVariant: 'EMBED';
+  };
+  'LINKEDIN.FEED_POST.SLUG': {
+    contentType: 'FEED_POST';
+    postId: string;
+    site: 'LINKEDIN';
+    url: string;
+    urlVariant: 'SLUG';
+  };
   'LINKEDIN.ORGANIZATION_PROFILE.DEFAULT': {
     contentType: 'ORGANIZATION_PROFILE';
     site: 'LINKEDIN';
@@ -1496,6 +1510,55 @@ export const siteContentRules: {
         },
     },
     urlVariant: 'DEFAULT',
+    weight: 100,
+  },
+  'LINKEDIN.FEED_POST.EMBED': {
+    contentType: 'FEED_POST',
+    domain: 'linkedin.com',
+    extractContentInfo: createIdFromFirstPathnameRegexMatchContentInfoExtractor(
+      'postId',
+      /^\/embed\/feed\/update\/urn:li:activity:([\w-]+)/u,
+      'https://www.linkedin.com/embed/feed/update/urn:li:activity:{{postId}}/',
+    ),
+    formatUrl: ({ postId }) => {
+      return `https://www.linkedin.com/embed/feed/update/urn:li:activity:${postId}/`;
+    },
+    site: 'LINKEDIN',
+    tests: {
+      'https://www.linkedin.com/embed/feed/update/urn:li:activity:7397388671315824640/':
+        {
+          postId: '7397388671315824640',
+          url: 'https://www.linkedin.com/embed/feed/update/urn:li:activity:7397388671315824640/',
+        },
+    },
+    urlVariant: 'EMBED',
+    weight: 100,
+  },
+  'LINKEDIN.FEED_POST.SLUG': {
+    contentType: 'FEED_POST',
+    domain: 'linkedin.com',
+    extractContentInfo: createIdFromFirstPathnameRegexMatchContentInfoExtractor(
+      'postId',
+      /^\/posts\/[\w-]+-activity-(\d+)-[\w-]+/u,
+      'https://www.linkedin.com/feed/update/urn:li:activity:{{postId}}/',
+    ),
+    formatUrl: ({ postId }) => {
+      return `https://www.linkedin.com/feed/update/urn:li:activity:${postId}/`;
+    },
+    site: 'LINKEDIN',
+    tests: {
+      'https://www.linkedin.com/posts/contrahq_7daysofgiving-activity-7398759023665242113-6GS8':
+        {
+          postId: '7398759023665242113',
+          url: 'https://www.linkedin.com/feed/update/urn:li:activity:7398759023665242113/',
+        },
+      'https://www.linkedin.com/posts/gajus_strictly-typed-sql-with-contra-cto-gajus-activity-7397388671315824640-UdZh':
+        {
+          postId: '7397388671315824640',
+          url: 'https://www.linkedin.com/feed/update/urn:li:activity:7397388671315824640/',
+        },
+    },
+    urlVariant: 'SLUG',
     weight: 100,
   },
   'LINKEDIN.ORGANIZATION_PROFILE.DEFAULT': {
